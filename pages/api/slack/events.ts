@@ -3,13 +3,19 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { WebClient } from '@slack/web-api'
 import { verifySlackToken } from '../../../utils'
 
-type Error = {
+interface Data {
+    data: string
+}
+
+interface Error {
     error: string
 }
 
+
+
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<string | Error>
+    res: NextApiResponse<string | Data | Error>
 ) {
     console.log({ method: req.method })
     if (req.method !== 'POST') {
@@ -34,11 +40,8 @@ export default async function handler(
                 text: 'hello',
                 channel: data.event.channel,
             });
-            return {
-                statusCode: 200,
-                body: JSON.stringify({data:"ok"})
-            };
-           break;
+            res.status(200).send({ data: 'ok' })
+            break;
         default:
             res.status(500).send({ error: 'Unknown type' })
 
