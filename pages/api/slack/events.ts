@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { WebClient } from '@slack/web-api'
 import { verifySlackToken } from '../../../utils'
+import { getData } from '../../../utils/dataHelper'
 
 interface Data {
     data: string
@@ -26,24 +27,20 @@ export default async function handler(
     console.log({ data });
 
     switch (data.type) {
-        //intial verification of the url, required by slack 
         case "url_verification":
             res.status(200).send(verifySlackToken(data.token, data.challenge))
             break;
-
         case "event_callback":
             const web = new WebClient(process.env.SLACK_AUTH_TOKEN);
-            //data.event.text contains message
-            // get money supply data
-            // const parsed = await getData();
+            const parsed = await getData();
             await web.chat.postMessage({
-                text: 'hello',
+                blocks: parsed,
                 channel: data.event.channel,
             });
-            res.status(200).send({ data: 'ok' })
+            res.status(200).send({ data: 'ok' });
             break;
         default:
-            res.status(500).send({ error: 'Unknown type' })
+            res.status(500).send({ error: 'Unknown type' });
 
     }
 }
