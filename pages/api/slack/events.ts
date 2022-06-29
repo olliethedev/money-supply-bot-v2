@@ -31,7 +31,7 @@ export default async function handler(
             // get money supply data
             // const parsed = await getData();
             await web.chat.postMessage({
-                message: 'hello',
+                text: 'hello',
                 channel: data.event.channel,
             });
             return {
