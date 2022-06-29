@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-// import { WebClient } from '@slack/web-api'
+import { WebClient } from '@slack/web-api'
 import { verifySlackToken } from '../../../utils'
 
 type Error = {
@@ -25,21 +25,20 @@ export default async function handler(
             res.status(200).send(verifySlackToken(data.token, data.challenge))
             break;
 
-        //this type will contain mention event data
-        // case "event_callback":
-        //     const web = new WebClient(process.env.SLACK_TOKEN);
-        //     //data.event.text contains message
-        //     // get money supply data
-        //     const parsed = await getData();
-        //     await web.chat.postMessage({
-        //         blocks:parsed,
-        //         channel: data.event.channel,
-        //     });
-        //     return {
-        //         statusCode: 200,
-        //         body: JSON.stringify({data:"ok"})
-        //     };
-        //    break;
+        case "event_callback":
+            const web = new WebClient(process.env.SLACK_AUTH_TOKEN);
+            //data.event.text contains message
+            // get money supply data
+            // const parsed = await getData();
+            await web.chat.postMessage({
+                message: 'hello',
+                channel: data.event.channel,
+            });
+            return {
+                statusCode: 200,
+                body: JSON.stringify({data:"ok"})
+            };
+           break;
         default:
             res.status(500).send({ error: 'Unknown type' })
 
