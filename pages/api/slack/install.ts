@@ -9,7 +9,6 @@ export default async function handler(
 ) {
     await SlackInstaller.handleInstallPath(req, res, undefined, {
         scopes: ['chat:write', 'chat:write.public', 'app_mentions:read'],
-        userScopes: ['chat:write', 'channels:write'],
         metadata: 'some_metadata',
         redirectUri: process.env.SLACK_OAUTH_REDIRECT as string
     });
