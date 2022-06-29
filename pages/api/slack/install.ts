@@ -11,6 +11,6 @@ export default async function handler(
         scopes: ['chat:write', 'chat:write.public', 'app_mentions:read'],
         userScopes: ['chat:write', 'channels:write'],
         metadata: 'some_metadata',
-        redirectUri: 'api/slack/redirect'
+        redirectUri: process.env.SLACK_OAUTH_REDIRECT as string
     });
 }
