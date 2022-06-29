@@ -34,7 +34,7 @@ export const formatMessage = (
   // const fromTimeMonth = moment(fromTime).format("MMMM");
   const toTimeMonth = moment(toTime).format("MMMM");
   const YoYpercent = ((toValue - yearAgoValue)/ yearAgoValue * 100.00).toFixed(2);
-  return `:flag-ca: *${ moneySupplyType }* in ${ toTimeMonth } \n:${ changed }: Monthly change: *${ percent }%*  (YoY: ${YoYpercent}%) `;
+  return `:flag-ca: *${moneySupplyType}*  \n :${changed}: ${toTimeMonth} change: *${percent}%* \n Yearly change: *${YoYpercent}%* `;
   // return ` Canada's ${moneySupplyType} ${changed} from $${fromValueClean}T in ${fromTimeMonth} to $${toValueClean}T in ${toTimeMonth}, a change of ${percent}% from last month.`;
 }
 
