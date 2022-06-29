@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SlackInstaller } from '../../utils';
+import { SlackInstaller } from '../../../utils';
 
 
 export default async function handler(
