@@ -29,7 +29,7 @@ export default async function handler(
                 res.status(200).send(verifySlackToken(data.token, data.challenge))
                 break;
             case "event_callback":
-                const { enterprise_id, team_id, is_enterprise_install } = data.authorizations;
+                const { enterprise_id, team_id, is_enterprise_install } = data.authorizations[0];
                 console.log({ enterprise_id, team_id, is_enterprise_install });
                 const installData = await getSlackInstaller(req.db)
                     .installationStore
