@@ -18,7 +18,7 @@ export type NextApiRequestWithMongoDB = NextApiRequest & {
 let indexesCreated = false;
 export async function createIndexes(db:mongoDB.Db) {
   await Promise.all([
-    db.collection('Installations').createIndex({ installation: 1 }, { unique: true }),
+    db.collection('Installations').createIndex({ installationId: 1 }, { unique: true }),
   ]);
   indexesCreated = true;
 }
