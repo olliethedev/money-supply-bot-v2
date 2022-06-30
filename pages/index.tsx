@@ -54,7 +54,7 @@ const Home: NextPage<Props> = ({ workspaceCount }) => {
   );
 };
 
-export const getStaticProps: GetServerSideProps = async ({
+export const getServerSideProps: GetServerSideProps = async ({
   req, res
 }) => {
   await nc().use(database).run(req, res); // database middleware
