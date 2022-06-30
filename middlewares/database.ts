@@ -15,8 +15,6 @@ export type NextApiRequestWithMongoDB = NextApiRequest & {
 
  let globalWithMongo = global as GlobalMongo;
 
-  globalWithMongo.mongo = globalWithMongo.mongo || {};
-
 let indexesCreated = false;
 export async function createIndexes(db:mongoDB.Db) {
   await Promise.all([
