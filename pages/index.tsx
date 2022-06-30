@@ -58,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   req, res
 }) => {
   await nc().use(database).run(req, res); // database middleware
-  const count = countInstallations((req as NextApiRequestWithMongoDB).db)
+  const count = await countInstallations((req as NextApiRequestWithMongoDB).db)
   return {
     props: {
       workspaceCount: count,
