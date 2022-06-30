@@ -1,8 +1,12 @@
 import { InstallProvider } from '@slack/oauth';
+import { WebClient } from '@slack/web-api'
 import moment from 'moment';
 import fetch from 'node-fetch';
 
-// initialize the installProvider
+export const getSlackClient = (authToken: string) => {
+  return new WebClient(authToken);
+}
+
 export const SlackInstaller = new InstallProvider({
   clientId: process.env.SLACK_CLIENT_ID as string,
   clientSecret: process.env.SLACK_CLIENT_SECRET as string,

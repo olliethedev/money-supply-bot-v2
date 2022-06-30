@@ -8,7 +8,7 @@ export const getData = async () => {
     for (let i = 0; i < MONEY_TYPES.length; i++) {
         const moneyType = MONEY_TYPES[i];
         try {
-            const blockData = await getBlockFromJson(moneyType);
+            const blockData = await getBlockData(moneyType);
             blocks.push(blockData);
             if (i < MONEY_TYPES.length - 1) {
                 blocks.push({
@@ -29,7 +29,7 @@ export const getData = async () => {
     return blocks;
 };
 
-const getBlockFromJson = async (moneyType: string) => {
+const getBlockData = async (moneyType: string) => {
     const moneyResp = await getMoneySupply(moneyType);
     const moneyRespJson = await moneyResp.json();
     const { moneyDataFrom, moneyDataTo, moneyDataYearAgo } =
