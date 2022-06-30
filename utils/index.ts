@@ -11,6 +11,53 @@ export const SlackInstaller = new InstallProvider({
   clientId: process.env.SLACK_CLIENT_ID as string,
   clientSecret: process.env.SLACK_CLIENT_SECRET as string,
   stateSecret: process.env.SLACK_STATE_SECRET,
+  installationStore: {
+    // takes in an installation object as an argument
+    // returns nothing
+    storeInstallation: async (installation) => {
+      console.log(installation);
+      console.log(JSON.stringify(installation));
+      // replace myDB.set with your own database or OEM setter
+      // if (installation.isEnterpriseInstall) {
+      //   // support for org wide app installation
+      //   return myDB.set(installation.enterprise.id, installation);
+      // } else {
+      //   // single team app installation
+      //   return myDB.set(installation.team.id, installation);
+      // }
+      throw new Error('Failed saving installation data to installationStore');
+    },
+    // takes in an installQuery as an argument
+    // installQuery = {teamId: 'string', enterpriseId: 'string', userId: 'string', conversationId: 'string', isEnterpriseInstall: boolean};
+    // returns installation object from database
+    fetchInstallation: async (installQuery) => {
+      // // replace myDB.get with your own database or OEM getter
+      // if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+      //   // org wide app installation lookup
+      //   return await myDB.get(installQuery.enterpriseId);
+      // }
+      // if (installQuery.teamId !== undefined) {
+      //   // single team app installation lookup
+      //   return await myDB.get(installQuery.teamId);
+      // }
+      throw new Error('Failed fetching installation');
+    },
+    // takes in an installQuery as an argument
+    // installQuery = {teamId: 'string', enterpriseId: 'string', userId: 'string', conversationId: 'string', isEnterpriseInstall: boolean};
+    // returns nothing
+    deleteInstallation: async (installQuery) => {
+      // // replace myDB.get with your own database or OEM getter
+      // if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+      //   // org wide app installation deletion
+      //   return await myDB.delete(installQuery.enterpriseId);
+      // }
+      // if (installQuery.teamId !== undefined) {
+      //   // single team app installation deletion
+      //   return await myDB.delete(installQuery.teamId);
+      // }
+      throw new Error('Failed to delete installation');
+    },
+  },
 });
 
 export const verifySlackToken = (token: string, challenge: string) => {
