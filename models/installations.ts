@@ -25,3 +25,10 @@ export async function findInstallationById(db: mongoDB.Db, installationId: strin
       })
       .then(({ acknowledged }) => acknowledged);
   }
+
+  export async function countInstallations(db: mongoDB.Db) {
+    return db
+      .collection('Installations')
+      .countDocuments()
+      .then((count) => count);
+  }
