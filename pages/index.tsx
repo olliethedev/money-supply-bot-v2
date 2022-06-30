@@ -41,7 +41,7 @@ const BodyElement: React.FC<{ workspaceCount: number }> = ({
     <main className={styles.main}>
       <h2 className={styles.subtitle}>Welcome to</h2>
       <h1 className={styles.title}>
-        <a href="#">MoneySupplyBotV2!</a>
+        <a href="api/slack/install">MoneySupplyBotV2!</a>
       </h1>
       <p>
         <b>{workspaceCount}</b> workspaces installed this app!
