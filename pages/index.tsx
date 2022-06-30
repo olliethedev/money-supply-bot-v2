@@ -3,6 +3,12 @@ import Head from "next/head";
 import Image from "next/image";
 import { GetServerSideProps } from "next";
 import styles from "../styles/Home.module.css";
+import nc from 'next-connect';
+import database, { NextApiRequestWithMongoDB } from "../middlewares/database";
+import { countInstallations } from "../models/installations";
+
+
+
 
 interface Props {
   workspaceCount: number;
@@ -12,7 +18,7 @@ const Home: NextPage<Props> = ({ workspaceCount }) => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Money Supply Bot V2</title>
         <meta
           name="description"
           content="This Bot tracks the minting and burning of fiat."
@@ -48,10 +54,14 @@ const Home: NextPage<Props> = ({ workspaceCount }) => {
   );
 };
 
-export const getStaticProps: GetServerSideProps = async () => {
+export const getStaticProps: GetServerSideProps = async ({
+  req, res
+}) => {
+  await nc().use(database).run(req, res); // database middleware
+  const count = countInstallations((req as NextApiRequestWithMongoDB).db)
   return {
     props: {
-      workspaceCount: 1,
+      workspaceCount: count,
     },
   };
 };
