@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { NextApiRequestWithMongoDB } from '../../../middlewares/database'
 import { getSlackClient, getSlackInstaller, verifySlackToken } from '../../../utils'
 import { getData } from '../../../utils/dataHelper'
+import nc from 'next-connect';
+import database, { NextApiRequestWithMongoDB } from '../../../middlewares/database';
 
 interface Data {
     data: string
@@ -12,14 +13,12 @@ interface Error {
     error: string
 }
 
-export default async function handler(
-    req: NextApiRequestWithMongoDB,
-    res: NextApiResponse<string | Data | Error>
-) {
-    if (req.method !== 'POST') {
-        res.status(500).send({ error: 'Only POST requests allowed' })
-        return;
-    }
+const handler = nc();
+
+handler.use(database);
+
+handler.post(async (req: NextApiRequestWithMongoDB,
+    res: NextApiResponse<string | Data | Error>) => {
     const data = req.body;
 
     console.log({ method: req.method, body: JSON.stringify(data) });
@@ -54,5 +53,4 @@ export default async function handler(
         console.log({ error });
         res.status(500).send({ error: 'Error processing event' });
     }
-
-}
+})
