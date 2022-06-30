@@ -22,15 +22,24 @@ export default async function handler(
     }
     const data = req.body;
 
-    console.log({ method: req.method, body: JSON.stringify(data)  });
+    console.log({ method: req.method, body: JSON.stringify(data) });
     try {
         switch (data.type) {
             case "url_verification":
                 res.status(200).send(verifySlackToken(data.token, data.challenge))
                 break;
             case "event_callback":
-                const installData = await getSlackInstaller(req.db).installationStore.fetchInstallation({teamId:data.authorizations.team_id as string, enterpriseId:data.authorizations.enterprise_id as string, isEnterpriseInstall:false}); //todo: find how to check isEnterpriseInstall
-                console.log({installData});
+                const { enterprise_id, team_id, is_enterprise_install } = data.authorizations;
+                console.log({ enterprise_id, team_id, is_enterprise_install });
+                const installData = await getSlackInstaller(req.db)
+                    .installationStore
+                    .fetchInstallation(
+                        {
+                            teamId: team_id,
+                            enterpriseId: enterprise_id,
+                            isEnterpriseInstall: is_enterprise_install
+                        });
+                console.log({ installData });
                 const parsed = await getData();
                 await getSlackClient(installData.bot?.token as string).chat.postMessage({
                     blocks: parsed,
