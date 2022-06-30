@@ -4,6 +4,6 @@ export {};
 
 declare global {
     type GlobalMongo =  {
-    mongo: mongoDB.MongoClient ;
+    mongo?: mongoDB.MongoClient ;
   } & typeof globalThis;
 }
