@@ -1,7 +1,9 @@
+import * as mongoDB from "mongodb";
+
 export {};
 
 declare global {
-    type GlobalMongo = globalThis & {
+    type GlobalMongo =  {
     mongo: mongoDB.MongoClient;
-  };
+  } & typeof globalThis;
 }
