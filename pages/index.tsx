@@ -1,14 +1,14 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
+import type { NextPage } from "next";
+import Head from "next/head";
+import Image from "next/image";
 import { GetServerSideProps } from "next";
-import styles from '../styles/Home.module.css'
+import styles from "../styles/Home.module.css";
 
 interface Props {
-  workspaceCount:number
+  workspaceCount: number;
 }
 
-const Home: NextPage<Props> = ({workspaceCount}) => {
+const Home: NextPage<Props> = ({ workspaceCount }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -30,22 +30,22 @@ const Home: NextPage<Props> = ({workspaceCount}) => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
+          Powered by{" "}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
         </a>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export const getStaticProps :GetServerSideProps = async () => {
+export const getStaticProps: GetServerSideProps = async () => {
   return {
     props: {
-      workspaceCount:1
+      workspaceCount: 1,
     },
-  }
-}
+  };
+};
 
-export default Home
+export default Home;

@@ -53,4 +53,6 @@ handler.post(async (req: NextApiRequestWithMongoDB,
         console.log({ error });
         res.status(500).send({ error: 'Error processing event' });
     }
-})
+});
+
+export default handler;
