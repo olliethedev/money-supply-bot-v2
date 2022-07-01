@@ -10,11 +10,16 @@ interface Error {
 }
 
 handler.get(async (req: NextApiRequestWithMongoDB,
-    res: NextApiResponse< MoneyDataItem[] | Error>) => {
-
+    res: NextApiResponse<MoneyDataItem[] | Error>) => {
+    const query = req.query;
+    const { moneyType } = query;
     try {
-        const data = await getMonetaryData(req.db, 'M1');
-        res.status(200).send(data);
+        if(moneyType === 'M1' || moneyType === 'M2' || moneyType === 'M3') {
+            const data = await getMonetaryData(req.db, moneyType);
+            res.status(200).send(data);
+        }else{
+            res.status(500).send({ error: 'Unknown money type: ' + moneyType });
+        }
     } catch (error) {
         console.log({ error });
         res.status(500).send({ error: 'Error getting data' });
