@@ -1,9 +1,10 @@
 import fetch from 'node-fetch';
 import moment from 'moment';
+import { MonetaryData } from '../types/MonetartyDataResponse';
 
 export const getBlockData = async (moneyType: string) => {
     const moneyResp = await getMoneySupply(moneyType);
-    const moneyRespJson = await moneyResp.json();
+    const moneyRespJson = (await moneyResp.json()) as MonetaryData;
     const { moneyDataFrom, moneyDataTo, moneyDataYearAgo } =
         parseResponse(moneyRespJson);
     const parsed = formatMessage(
@@ -23,7 +24,7 @@ export const getBlockData = async (moneyType: string) => {
     };
 };
 
-const parseResponse = (respJson: any) => {
+const parseResponse = (respJson: MonetaryData) => {
     const moneyData = respJson.chart_data[0][0].raw_data;
     const moneyDataFrom = moneyData[moneyData.length - 2];
     const moneyDataTo = moneyData[moneyData.length - 1];
@@ -52,9 +53,9 @@ const getMoneySupply = async (moneySupplyType = 'M1') => {
 }
 
 const formatMessage = (
-    fromTime: string,
+    fromTime: number,
     fromValue: number,
-    toTime: string,
+    toTime: number,
     toValue: number,
     yearAgoValue: number,
     moneySupplyType: "M1" | "M2" | "M3"
