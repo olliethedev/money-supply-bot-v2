@@ -1,8 +1,8 @@
 import nc from 'next-connect';
 import database from './database';
 
-const all = nc();
+const handler = nc();
 
-all.use(database);
+handler.use(database);
 
-export default all;
+export default handler;

@@ -1,9 +1,10 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiResponse } from 'next'
-import nc from 'next-connect';
+
 import { getSlackClient, getSlackInstaller, verifySlackToken, getMonetaryData } from '../../../utils'
-import database, { NextApiRequestWithMongoDB } from '../../../middlewares/database';
 import { Db } from 'mongodb';
+import { SlackData } from '../../../types/SlackData';
+import handler from '../../../middlewares';
+import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 
 interface Data {
     data: string
@@ -12,10 +13,6 @@ interface Data {
 interface Error {
     error: string
 }
-
-const handler = nc();
-
-handler.use(database);
 
 handler.post(async (req: NextApiRequestWithMongoDB,
     res: NextApiResponse<string | Data | Error>) => {
@@ -29,7 +26,7 @@ handler.post(async (req: NextApiRequestWithMongoDB,
                 res.status(200).send(challenge);
                 break;
             case "event_callback":
-                await handleEvent(req.db, res);
+                await handleEvent(req.db, data);
                 res.status(200).send({ data: 'ok' });
                 break;
             default:
@@ -41,7 +38,7 @@ handler.post(async (req: NextApiRequestWithMongoDB,
     }
 });
 
-const handleEvent = async (db: Db, data: any) => {
+const handleEvent = async (db: Db, data: SlackData) => {
     const { enterprise_id, team_id, is_enterprise_install } = data.authorizations[0];
     console.log({ enterprise_id, team_id, is_enterprise_install });
     const installData = await getSlackInstaller(db)

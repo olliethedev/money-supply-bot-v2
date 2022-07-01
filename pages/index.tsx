@@ -4,8 +4,9 @@ import Image from "next/image";
 import { GetServerSideProps } from "next";
 import styles from "../styles/Home.module.css";
 import nc from "next-connect";
-import database, { NextApiRequestWithMongoDB } from "../middlewares/database";
 import { countInstallations } from "../models/installations";
+import handler from "../middlewares";
+import { NextApiRequestWithMongoDB } from "../types/NextApiRequestWithMongoDB";
 
 interface Props {
   workspaceCount: number;
@@ -69,7 +70,7 @@ const FooterElement: React.FC = () => {
 
 // Server-side: This gets called on every request.
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  await nc().use(database).run(req, res); // database middleware
+  await handler.run(req, res); // database middleware
   const count = await countInstallations((req as NextApiRequestWithMongoDB).db);
   return {
     props: {

@@ -1,10 +1,8 @@
 import * as mongoDB from "mongodb";
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiResponse } from 'next'
+import { NextApiRequestWithMongoDB } from "../types/NextApiRequestWithMongoDB";
 
-export type NextApiRequestWithMongoDB = NextApiRequest & {
-    dbClient: mongoDB.MongoClient,
-    db: mongoDB.Db,
-}
+
 
 /**
  * Global is used here to maintain a cached connection across hot reloads

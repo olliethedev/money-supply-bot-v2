@@ -1,12 +1,8 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type {  NextApiResponse } from 'next'
+import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 import { getSlackInstaller } from '../../../utils';
-import nc from 'next-connect';
-import database, { NextApiRequestWithMongoDB } from '../../../middlewares/database';
+import handler from '../../../middlewares';
 
-const handler = nc();
-
-handler.use(database);
 
 handler.get(async (
     req: NextApiRequestWithMongoDB,
