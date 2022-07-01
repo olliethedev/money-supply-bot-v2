@@ -28,7 +28,8 @@ const parseResponse = (respJson: MonetaryData) => {
     const moneyData = respJson.chart_data[0][0].raw_data;
     const moneyDataFrom = moneyData[moneyData.length - 2];
     const moneyDataTo = moneyData[moneyData.length - 1];
-    const moneyDataYearAgo = moneyData[moneyData.length - 12];
+    const yearSafeOffset= Math.min(moneyData.length-1, moneyData.length - 13);
+    const moneyDataYearAgo = moneyData[yearSafeOffset];
     return { moneyDataFrom, moneyDataTo, moneyDataYearAgo };
 }
 
