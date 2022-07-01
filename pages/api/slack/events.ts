@@ -50,7 +50,7 @@ const handleEvent = async (db: Db, data: SlackData) => {
                 isEnterpriseInstall: is_enterprise_install
             });
     console.log({ installData });
-    const parsed = await getMonetaryData();
+    const parsed = await getMonetaryData(db);
     await getSlackClient(installData.bot?.token as string).chat.postMessage({
         blocks: parsed,
         channel: data.event.channel,

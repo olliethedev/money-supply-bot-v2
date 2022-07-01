@@ -17,6 +17,10 @@ let indexesCreated = false;
 export async function createIndexes(db:mongoDB.Db) {
   await Promise.all([
     db.collection('Installations').createIndex({ installationId: 1 }, { unique: true }),
+    db.collection('CacheStatus').createIndex({ id: 1 }, { unique: true }),
+    db.collection('M1').createIndex({ date: 1 }, { unique: true }),
+    db.collection('M2').createIndex({ date: 1 }, { unique: true }),
+    db.collection('M3').createIndex({ date: 1 }, { unique: true }),
   ]);
   indexesCreated = true;
 }

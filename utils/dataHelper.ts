@@ -1,19 +1,19 @@
-import fetch from 'node-fetch';
 import moment from 'moment';
-import { MonetaryData } from '../types/MonetartyDataResponse';
+import * as mongoDB from "mongodb";
+import { MoneyDataItem } from '../types/MonetaryDataItem';
+import { getMonetaryData } from './cacheHelper';
 
-export const getBlockData = async (moneyType: string) => {
-    const moneyResp = await getMoneySupply(moneyType);
-    const moneyRespJson = (await moneyResp.json()) as MonetaryData;
+export const getBlockData = async (db:mongoDB.Db ,moneyType: "M1" | "M2" | "M3") => {
+    const moneyRespJson = await getMonetaryData(db, moneyType);
     const { moneyDataFrom, moneyDataTo, moneyDataYearAgo } =
-        parseResponse(moneyRespJson);
+        parseData(moneyRespJson);
     const parsed = formatMessage(
-        moneyDataFrom[0],
-        moneyDataFrom[1],
-        moneyDataTo[0],
-        moneyDataTo[1],
-        moneyDataYearAgo[1],
-        moneyType as "M1" | "M2" | "M3"
+        moneyDataFrom.date,
+        moneyDataFrom.value,
+        moneyDataTo.date,
+        moneyDataTo.value,
+        moneyDataYearAgo.value,
+        moneyType
     );
     return {
         type: "section",
@@ -24,33 +24,12 @@ export const getBlockData = async (moneyType: string) => {
     };
 };
 
-const parseResponse = (respJson: MonetaryData) => {
-    const moneyData = respJson.chart_data[0][0].raw_data;
+const parseData = (moneyData: MoneyDataItem[]) => {
     const moneyDataFrom = moneyData[moneyData.length - 2];
     const moneyDataTo = moneyData[moneyData.length - 1];
     const yearSafeOffset= Math.min(moneyData.length-1, moneyData.length - 13);
     const moneyDataYearAgo = moneyData[yearSafeOffset];
     return { moneyDataFrom, moneyDataTo, moneyDataYearAgo };
-}
-
-const getMoneySupply = async (moneySupplyType = 'M1') => {
-    return fetch(`${ process.env.DATA_API }?chartType=interactive&dateSelection=range&format=real&partner=basic_2000&scaleType=linear&splitType=single&zoom=2&redesign=true&maxPoints=689&securities=id%3AI%3AC${ moneySupplyType }${ moneySupplyType === "M3" ? "MS" : "MSSM" }%2Cinclude%3Atrue%2C%2C`, {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-            "accept-language": "en-US,en;q=0.9",
-            "cache-control": "max-age=0",
-            "sec-fetch-dest": "document",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "none",
-            "sec-fetch-user": "?1",
-            "sec-gpc": "1",
-            "upgrade-insecure-requests": "1",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"
-        },
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-    });
 }
 
 const formatMessage = (

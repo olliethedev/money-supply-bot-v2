@@ -61,12 +61,12 @@ export const verifySlackToken = (token: string, challenge: string) => {
   else return "failed";
 }
 
-export const getMonetaryData = async () => {
+export const getMonetaryData = async (db: mongoDB.Db) => {
   const blocks = [];
   for (let i = 0; i < MONEY_TYPES.length; i++) {
       const moneyType = MONEY_TYPES[i];
       try {
-          const blockData = await getBlockData(moneyType);
+          const blockData = await getBlockData(db, moneyType as 'M1' | 'M2' | 'M3');
           blocks.push(blockData);
           if (i < MONEY_TYPES.length - 1) {
               blocks.push({
