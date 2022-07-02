@@ -33,9 +33,10 @@ export const commandHelper = async (db: mongoDB.Db, command: string[], onError: 
             }
 
         });
-
     try {
-        return program.parseAsync(command);
+        const result = await program.parseAsync(command);
+        program.commands = [];
+        return result;
 
     } catch (error) {
         console.log({ error });

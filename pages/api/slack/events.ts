@@ -51,6 +51,7 @@ const handleEvent = async (db: Db, data: SlackData) => {
                 isEnterpriseInstall: is_enterprise_install
             });
     console.log({ installData });
+    console.log({text:data.event.text})
     await commandHelper(db, ["node", "commandHelper.ts", ...data.event.text.replace('@Money Supply Bot V2', '').split(" ")], (error) => {
         getSlackClient(installData.bot?.token as string).chat.postMessage({
             blocks: textBlockWrapper(error),
