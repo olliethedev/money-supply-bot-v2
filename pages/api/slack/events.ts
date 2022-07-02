@@ -52,7 +52,9 @@ const handleEvent = async (db: Db, data: SlackData) => {
             });
     console.log({ installData });
     console.log({text:data.event.text})
-    await commandHelper(db, ["node", "commandHelper.ts", ...data.event.text.substring(data.event.text.indexOf(" ")+1).split(" ")], (error) => {
+    const command = ["node", "commandHelper.ts", ...data.event.text.substring(data.event.text.indexOf(" ")+1).split(" ")];
+    console.log({command})
+    await commandHelper(db, command, (error) => {
         getSlackClient(installData.bot?.token as string).chat.postMessage({
             blocks: textBlockWrapper(error),
             channel: data.event.channel,
