@@ -3,7 +3,7 @@ import * as mongoDB from "mongodb";
 import { MoneyDataItem } from '../types/MonetaryDataItem';
 import { getMonetaryData } from './cacheHelper';
 
-export const getBlockData = async (db:mongoDB.Db ,moneyType: "M1" | "M2" | "M3") => {
+export const getBlockData = async (db:mongoDB.Db, moneyType: "M1" | "M2" | "M3") => {
     const moneyRespJson = await getMonetaryData(db, moneyType);
     const { moneyDataFrom, moneyDataTo, moneyDataYearAgo } =
         parseData(moneyRespJson);

@@ -5,6 +5,7 @@ import { Db } from 'mongodb';
 import { SlackData } from '../../../types/SlackData';
 import handler from '../../../middlewares';
 import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
+import { commandHelper } from '../../../utils/commandHelper';
 
 interface Data {
     data: string
@@ -50,12 +51,36 @@ const handleEvent = async (db: Db, data: SlackData) => {
                 isEnterpriseInstall: is_enterprise_install
             });
     console.log({ installData });
-    const parsed = await getMonetaryData(db);
-    await getSlackClient(installData.bot?.token as string).chat.postMessage({
-        blocks: parsed,
-        channel: data.event.channel,
-    });
+    await commandHelper(db, ["node", "commandHelper.ts", ...data.event.text.split(" ")], (error) => {
+        getSlackClient(installData.bot?.token as string).chat.postMessage({
+            blocks: textBlockWrapper(error),
+            channel: data.event.channel,
+        });
+    }, (help) => {
+        getSlackClient(installData.bot?.token as string).chat.postMessage({
+            blocks: textBlockWrapper(help),
+            channel: data.event.channel,
+        });
+    }, async (data) => {
+        return getSlackClient(installData.bot?.token as string).chat.postMessage({
+            blocks: data,
+            channel: data.event.channel,
+        });
+    })//await getMonetaryData(db);
 
+
+}
+
+const textBlockWrapper = (text: string) => {
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": text
+            }
+        }
+    ]
 }
 
 export default handler;
