@@ -78,7 +78,7 @@ const textBlockWrapper = (text: string) => {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": text
+                "text": text??"Ooops"
             }
         }
     ]
