@@ -66,7 +66,7 @@ const handleEvent = async (db: Db, data: SlackData) => {
         });
     }, async (commandData) => {
         return getSlackClient(installData.bot?.token as string).chat.postMessage({
-            blocks: commandData,
+            blocks: [commandData],
             channel: data.event.channel,
         });
     })//await getMonetaryData(db);
