@@ -57,16 +57,19 @@ const handleEvent = async (db: Db, data: SlackData) => {
     console.log({ command })
     const chatClient = getSlackClient(installData.bot?.token as string).chat;
     await commandHelper(db, command, async (error) => {
+        console.log("got error", error);
         await chatClient.postMessage({
             blocks: textBlockWrapper(error),
             channel: data.event.channel,
         });
     }, async (help) => {
+        console.log("got help", help);
         await chatClient.postMessage({
             blocks: textBlockWrapper(help),
             channel: data.event.channel,
         });
     }, async (commandData) => {
+        console.log("got commandData", commandData);
         return chatClient.postMessage({
             blocks: commandData,
             channel: data.event.channel,
