@@ -54,7 +54,7 @@ const makeHousingCommand = (db: mongoDB.Db, onError: (err: string) => void, onHe
         .addOption(new Option('-mu, --municipality <string>', "Code of municipality to fetch").default("1001"))
         .addOption(new Option('-c, --community <string>', "Name of community to fetch").default("all"))
         .addOption(new Option('-t, --type <string>', "Type of housing to fetch. (all)All, (D)Detached, (S)Semi-detached, (A)Freehold Townhouse, (T)Condo Townhouse, (C)Condo Apt, (L)Link").choices(["all", "D", "S", "A", "T", "C", "L"]).default("all"))
-        .addOption(new Option('-m, --month <string>', "Month to fetch").choices([...moment.months("M")]).default(moment().month(moment().month()).format("M")))
+        .addOption(new Option('-m, --month <string>', "Month to fetch").choices([...moment.months("MMMM")]).default(moment().month(moment().month()).format("MMMM")))
         .addOption(new Option('-y, --year <string>', "Year to fetch. Ex: 2022").default(moment().year(moment().year()).format("YYYY")))
         .action(async (opts) => {
             console.log("housing ", { options: opts });
