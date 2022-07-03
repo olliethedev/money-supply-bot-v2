@@ -6,7 +6,7 @@ import { commandHelper } from '../../utils/commandHelper';
 
 const testCommands = [
     ["node", "MoneySupplyBotV2", "money", "-t", "M1"],
-    ["node", "MoneySupplyBotV2", "housing", "-mu", "10046", "-m", "April" ],
+    ["node", "MoneySupplyBotV2", "housing", "-mu", "Oakville", "-m", "April" ],
 ]
 
 interface Error {

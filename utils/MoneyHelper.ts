@@ -54,7 +54,6 @@ class MoneyHelper implements DataHelperBase<MoneyTypes> {
         const toTimeMonth = moment(toTime).format("MMMM");
         const YoYpercent = ((toValue - yearAgoValue) / yearAgoValue * 100.00).toFixed(2);
         return `:flag-ca: *${ moneySupplyType }* :money-with_wings: \n :${ changed }: ${ toTimeMonth } change: *${ percent }%* \n Yearly change: *${ YoYpercent }%* `;
-        // return ` Canada's ${moneySupplyType} ${changed} from $${fromValueClean}T in ${fromTimeMonth} to $${toValueClean}T in ${toTimeMonth}, a change of ${percent}% from last month.`;
     }
 }
 
