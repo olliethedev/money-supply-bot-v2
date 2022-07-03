@@ -56,13 +56,13 @@ const handleEvent = async (db: Db, data: SlackData) => {
     const command = ["node", "MoneySupplyBotV2", ...commandInput];
     console.log({ command })
     const chatClient = getSlackClient(installData.bot?.token as string).chat;
-    await commandHelper(db, command, (error) => {
-        chatClient.postMessage({
+    await commandHelper(db, command, async (error) => {
+        await chatClient.postMessage({
             blocks: textBlockWrapper(error),
             channel: data.event.channel,
         });
-    }, (help) => {
-        chatClient.postMessage({
+    }, async (help) => {
+        await chatClient.postMessage({
             blocks: textBlockWrapper(help),
             channel: data.event.channel,
         });

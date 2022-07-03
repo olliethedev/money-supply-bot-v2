@@ -5,7 +5,7 @@ import { getBlockData } from './dataHelper';
 
 type SuccessCallback = (data: (KnownBlock | Block)[]) => Promise<void | any>;
 
-export const commandHelper = async (db: mongoDB.Db, command: string[], onError: (err: string) => void, onHelp: (help: string) => void, onSuccess: SuccessCallback) => {
+export const commandHelper = async (db: mongoDB.Db, command: string[], onError: (err: string) => Promise<void | any>, onHelp: (help: string) => Promise<void | any>, onSuccess: SuccessCallback) => {
 
     program
         .name('MoneySupplyBotV2')
@@ -20,7 +20,7 @@ export const commandHelper = async (db: mongoDB.Db, command: string[], onError: 
     } catch (error) {
         console.log("..")
         console.log(JSON.stringify(error));
-        onError((error as any)?.message);
+        await onError((error as any)?.message);
         program.commands = [];
     }
 }
@@ -28,7 +28,6 @@ export const commandHelper = async (db: mongoDB.Db, command: string[], onError: 
 const makeMoneyCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp: (help: string) => void, onSuccess: SuccessCallback) => {
     return new Command('money')
         .description('Get Canada`s money supply')
-        .option('-t, --type <string>', "Type of data to fetch", "M1")
         .addOption(new Option('-t, --type <string>', "Type of data to fetch").choices(['M1', 'M2', 'M3']).default("M1"))
         .action(async (opts) => {
             console.log("money ", { options: opts.type });

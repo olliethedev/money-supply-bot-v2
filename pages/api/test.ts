@@ -19,9 +19,9 @@ handler.get(async (req: NextApiRequestWithMongoDB,
         //["node", "commandHelper.ts", "split", "-s", "/", "a/b/c"]
         //["node", "commandHelper.ts", "--help"]
         await commandHelper(req.db, ["node", "MoneySupplyBotV2", "money", "-t", "M1"],
-            (error) => {
+            async (error) => {
                 res.status(500).send({ error: error });
-            }, (help) => {
+            }, async (help) => {
                 res.status(200).send({ data: help });
             }, async (data) => {
                 res.status(200).send({ data });
