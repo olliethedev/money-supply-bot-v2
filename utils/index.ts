@@ -2,9 +2,6 @@ import { Installation, InstallProvider } from '@slack/oauth';
 import { WebClient } from '@slack/web-api';
 import * as mongoDB from 'mongodb';
 import { deleteInstallation, findInstallationById, insertInstallation } from '../models/installations';
-import { getBlockData } from './dataHelper';
-
-const MONEY_TYPES = ["M1", "M2", "M3"];
 
 export const getSlackClient = (authToken: string) => {
   return new WebClient(authToken);
@@ -60,31 +57,5 @@ export const verifySlackToken = (token: string, challenge: string) => {
   }
   else return "failed";
 }
-
-export const getMonetaryData = async (db: mongoDB.Db) => {
-  const blocks = [];
-  for (let i = 0; i < MONEY_TYPES.length; i++) {
-      const moneyType = MONEY_TYPES[i];
-      try {
-          const blockData = await getBlockData(db, moneyType as 'M1' | 'M2' | 'M3');
-          blocks.push(blockData);
-          if (i < MONEY_TYPES.length - 1) {
-              blocks.push({
-                  type: "divider",
-              });
-          }
-      } catch (ex) {
-          blocks.push({
-              type: "section",
-              text: {
-                  type: "plain_text",
-                  text: ":warning: Error loading: " + moneyType,
-                  emoji: true,
-              },
-          });
-      }
-  }
-  return blocks;
-};
 
 

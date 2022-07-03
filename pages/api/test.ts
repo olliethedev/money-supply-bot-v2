@@ -1,10 +1,13 @@
 import type { NextApiResponse } from 'next'
 
 import handler from '../../middlewares';
-import { MoneyDataItem } from '../../types/MonetaryDataItem';
 import { NextApiRequestWithMongoDB } from '../../types/NextApiRequestWithMongoDB';
-import { getMonetaryData } from '../../utils/cacheHelper';
 import { commandHelper } from '../../utils/commandHelper';
+
+const testCommands = [
+    ["node", "MoneySupplyBotV2", "money", "-t", "M1"],
+    ["node", "MoneySupplyBotV2", "housing", "-m", "10046"],
+]
 
 interface Error {
     error: string
@@ -18,7 +21,7 @@ handler.get(async (req: NextApiRequestWithMongoDB,
     try {
         //["node", "commandHelper.ts", "split", "-s", "/", "a/b/c"]
         //["node", "commandHelper.ts", "--help"]
-        await commandHelper(req.db, ["node", "MoneySupplyBotV2", "money", "-t", "M1"],
+        await commandHelper(req.db, testCommands[1],
             async (error) => {
                 res.status(500).send({ error: error });
             }, async (help) => {

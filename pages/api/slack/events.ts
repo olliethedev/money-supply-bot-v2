@@ -1,6 +1,6 @@
 import type { NextApiResponse } from 'next'
 
-import { getSlackClient, getSlackInstaller, verifySlackToken, getMonetaryData } from '../../../utils'
+import { getSlackClient, getSlackInstaller, verifySlackToken } from '../../../utils'
 import { Db } from 'mongodb';
 import { SlackData } from '../../../types/SlackData';
 import handler from '../../../middlewares';

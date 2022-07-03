@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import FormData from 'form-data';
+import { HousingFilter } from '../types/HousingFilter';
 
 export interface MonetaryData {
     chart_data: ((ChartDataEntityEntity)[])[]
@@ -190,14 +191,6 @@ export const getHousingFilters = async () => {
         .then(response => response.json() as Promise<HousingFilters>);
 }
 
-export interface Filter {
-    municipality?: string,
-    community?: string,
-    house_type?: string,
-    province?: string,
-    period_num?: number
-}
-
 export interface HousingTrends {
     status: boolean;
     data: TrendsData;
@@ -210,7 +203,7 @@ export interface HousingTrends {
 }
 export interface TrendsData {
     message: string;
-    chart?: (ChartEntity)[] | null;
+    chart: (ChartEntity)[];
     chart_axis: ChartAxis;
     chart_house_type?: (ChartHouseTypeEntity)[] | null;
     chart_sold_price?: (ChartSoldPriceEntity)[] | null;
@@ -255,13 +248,19 @@ export interface ChartSoldPriceEntity {
 }
 
 
-export const getHousingTrends = async (filter: Filter = {
+export const getHousingTrends = async (filter: HousingFilter = {
     municipality: "1001",
     community: "all",
     house_type: "all",
     province: "ON",
     period_num: 120
 }) => {
+    const body =  JSON.stringify({
+        ...filter,
+        ign: "",
+        lang: "en_US",
+    });
+    console.log(body);
     const token = await getHousingLoginToken();
     const login = await registerHousingToken(token.data.access_token, process.env.HOUSING_EMAIL as string, process.env.HOUSING_PASS as string);
     return fetch(`${ process.env.HOUSING_API }/stats/trend/chart`, {
@@ -270,11 +269,7 @@ export const getHousingTrends = async (filter: Filter = {
             authorization: `Bearer ${ token.data.access_token }`,
             "content-type": "application/json;charset=UTF-8",
         },
-        body: JSON.stringify({
-            ...filter,
-            ign: "",
-            lang: "en_US",
-        })
+        body
     })
         .then(response => response.json() as Promise<HousingTrends>);
 }
