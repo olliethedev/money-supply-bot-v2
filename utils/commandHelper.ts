@@ -1,6 +1,7 @@
 import { KnownBlock, Block } from '@slack/web-api';
 import { program, Command, Option } from 'commander';
 import * as mongoDB from 'mongodb';
+import moment from 'moment';
 import HousingHelper from './HousingHelper';
 import MoneyHelper from './MoneyHelper';
 
@@ -50,19 +51,25 @@ const makeMoneyCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp
 const makeHousingCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp: (help: string) => void, onSuccess: SuccessCallback) => {
     return new Command('housing')
         .description('Get Canada`s housing supply')
-        .addOption(new Option('-m, --municipality <string>', "Code of municipality to fetch").default("1001"))
+        .addOption(new Option('-mu, --municipality <string>', "Code of municipality to fetch").default("1001"))
         .addOption(new Option('-c, --community <string>', "Name of community to fetch").default("all"))
-        .addOption(new Option('-t, --type <string>', "Type of housing to fetch").choices(["all","D", "S", "A", "T", "C", "L"]).default("all"))
+        .addOption(new Option('-t, --type <string>', "Type of housing to fetch. (all)All, (D)Detached, (S)Semi-detached, (A)Freehold Townhouse, (T)Condo Townhouse, (C)Condo Apt, (L)Link").choices(["all", "D", "S", "A", "T", "C", "L"]).default("all"))
+        .addOption(new Option('-m, --month <string>', "Month to fetch").choices([...moment.months("M")]).default(moment().month(moment().month()).format("M")))
+        .addOption(new Option('-y, --year <string>', "Year to fetch. Ex: 2022").default(moment().year(moment().year()).format("YYYY")))
         .action(async (opts) => {
             console.log("housing ", { options: opts });
             try {
-                const data = await new HousingHelper().getBlockData(db, 
-                    { 
-                        period_num: 120, 
-                        province: "ON", 
-                        municipality: opts.municipality, 
-                        community: opts.community, 
-                        house_type: opts.type.length > 0 ? opts.type : `${opts.type}.` //add period to type for single letter types
+                const data = await new HousingHelper().getBlockData(db,
+                    {
+                        filter: {
+                            period_num: 120,
+                            province: "ON",
+                            municipality: opts.municipality,
+                            community: opts.community,
+                            house_type: opts.type.length > 0 ? opts.type : `${ opts.type }.` //add period to type for single letter types
+                        }, 
+                        month: moment().month(opts.month).format("MM"), 
+                        year: opts.year
                     });
                 return onSuccess([data]);
             } catch (error) {

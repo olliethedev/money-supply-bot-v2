@@ -4,12 +4,13 @@ import { DataHelperBase, BlockPartial } from '../types/DataHelperBase';
 import { HousingFilter } from '../types/HousingFilter';
 import { getHousingTrends, HousingTrends } from './apiHelper';
 
-class HousingHelper implements DataHelperBase<HousingFilter> {
-    async getBlockData(db: mongoDB.Db, filter: HousingFilter): Promise<BlockPartial> {
+class HousingHelper implements DataHelperBase<{filter:HousingFilter, month:string, year:string}> {
+    async getBlockData(db: mongoDB.Db, extra: {filter:HousingFilter, month:string, year:string}): Promise<BlockPartial> {
         //todo: refactor to use caching
-        const trends = await getHousingTrends(filter);
-        console.log({ trends });
-        const { dataFrom, dataTo, dataYearAgo } = this.parseData(trends);
+        console.log({extra});
+        const trends = await getHousingTrends(extra.filter);
+        console.log({ trendsLength: trends.data.chart.length });
+        const { dataFrom, dataTo, dataYearAgo } = this.parseData(trends, extra.month, extra.year);
         console.log({ dataFrom, dataTo, dataYearAgo });
         const parsed = this.formatMessage(
             moment(dataFrom.period).unix()*1000,
@@ -17,7 +18,7 @@ class HousingHelper implements DataHelperBase<HousingFilter> {
             moment(dataTo.period).unix()*1000,
             parseInt(dataTo.price_sold),
             parseInt(dataYearAgo.price_sold),
-            filter
+            extra.filter
         );
         return {
             type: "section",
@@ -27,11 +28,14 @@ class HousingHelper implements DataHelperBase<HousingFilter> {
             },
         };
     }
-    parseData = (trends: HousingTrends) => {
+    parseData = (trends: HousingTrends, month:string, year:string) => {
+        
         const data = trends.data.chart;
-        const dataFrom = data[data.length - 2];
-        const dataTo = data[data.length - 1];
-        const yearSafeOffset = Math.min(data.length - 1, data.length - 13);
+        const offset = data.findIndex(t => t.period.includes(`${year}-${month}`)) ?? 0;
+        const offsetFromEnd = data.length - offset - 1;
+        const dataFrom = data[data.length - offsetFromEnd - 2];
+        const dataTo = data[data.length - offsetFromEnd - 1];
+        const yearSafeOffset = Math.min(data.length - 1, data.length - offsetFromEnd - 13);
         const dataYearAgo = data[yearSafeOffset];
         return { dataFrom, dataTo, dataYearAgo };
     }
@@ -52,9 +56,9 @@ class HousingHelper implements DataHelperBase<HousingFilter> {
         // const fromValueClean = (fromValue / 1000000).toFixed(2);
         // const toValueClean = (toValue / 1000000).toFixed(2);
         // const fromTimeMonth = moment(fromTime).format("MMMM");
-        const toTimeMonth = moment(toTime).format("MMMM");
+        // const toTimeMonth = moment(toTime).format("MMMM");
         const YoYpercent = ((toValue - yearAgoValue) / yearAgoValue * 100.00).toFixed(2);
-        return `:flag-ca: *${ this.formatFilter(filter) }*  \n :${ changed }: ${ toTimeMonth } change: *${ percent }%* \n Yearly change: *${ YoYpercent }%* `;
+        return `:flag-ca: *${ this.formatFilter(filter) }*  \n :${ changed }: Monthly change: *${ percent }%* \n Yearly change: *${ YoYpercent }%* `;
         // return ` Canada's ${moneySupplyType} ${changed} from $${fromValueClean}T in ${fromTimeMonth} to $${toValueClean}T in ${toTimeMonth}, a change of ${percent}% from last month.`;
     }
 
