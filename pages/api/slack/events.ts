@@ -51,36 +51,38 @@ const handleEvent = async (db: Db, data: SlackData) => {
                 isEnterpriseInstall: is_enterprise_install
             });
     console.log({ installData });
-    console.log({text:data.event.text})
-    const command = ["node", "commandHelper.ts", ...data.event.text.substring(data.event.text.indexOf(" ")+1).split(" ")];
-    console.log({command})
+    console.log({ text: data.event.text })
+    const commandInput = data.event.text.substring(data.event.text.indexOf(" ") + 1).split(" ");
+    const command = ["node", "MoneySupplyBotV2", ...commandInput];
+    console.log({ command })
+    const chatClient = getSlackClient(installData.bot?.token as string).chat;
     await commandHelper(db, command, (error) => {
-        getSlackClient(installData.bot?.token as string).chat.postMessage({
+        chatClient.postMessage({
             blocks: textBlockWrapper(error),
             channel: data.event.channel,
         });
     }, (help) => {
-        getSlackClient(installData.bot?.token as string).chat.postMessage({
+        chatClient.postMessage({
             blocks: textBlockWrapper(help),
             channel: data.event.channel,
         });
     }, async (commandData) => {
-        return getSlackClient(installData.bot?.token as string).chat.postMessage({
-            blocks: [commandData],
+        return chatClient.postMessage({
+            blocks: commandData,
             channel: data.event.channel,
         });
-    })//await getMonetaryData(db);
+    });
 
 
 }
 
-const textBlockWrapper = (text: string) => {
+const textBlockWrapper = (text?: string) => {
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": text??"Ooops"
+                "text": text ?? "Ooops"
             }
         }
     ]
