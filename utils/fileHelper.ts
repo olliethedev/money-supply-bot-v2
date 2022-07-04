@@ -10,7 +10,7 @@ const s3 = new S3({
 
 export const uploadToBucket = async (file: any, fileName: string) => {
     const params ={
-        Bucket: process.env.AWS_BUCKET_NAME as string,
+        Bucket: process.env.MY_AWS_BUCKET_NAME as string,
         Key: fileName,
         ContentEncoding: 'base64',
         ACL: 'public-read',

@@ -1,8 +1,8 @@
-import puppeteer from 'puppeteer';
+import chromium from "chrome-aws-lambda";
 
 export const getScreenshot = async (url: string) => {
-    const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    const browser = await chromium.puppeteer.launch({
+        executablePath: await chromium.executablePath,
     });
     const page = await browser.newPage();
     await page.goto(
