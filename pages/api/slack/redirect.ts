@@ -5,7 +5,7 @@ import { getSlackInstaller } from '../../../utils';
 import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 import handler from '../../../middlewares';
 
-handler.get(async (
+handler.all(async (
     req: NextApiRequestWithMongoDB,
     res: NextApiResponse<any>
 ) => {
