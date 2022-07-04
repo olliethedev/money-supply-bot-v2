@@ -17,7 +17,6 @@ const Home: NextPage<Props> = ({ workspaceCount }) => {
     <div className={styles.container}>
       <HeadElement />
       <BodyElement workspaceCount={workspaceCount} />
-      <FooterElement />
     </div>
   );
 };
@@ -25,10 +24,10 @@ const Home: NextPage<Props> = ({ workspaceCount }) => {
 const HeadElement: React.FC = () => {
   return (
     <Head>
-      <title>Money Supply Bot V2</title>
+      <title>ECON BOT | Economics Metrics in Your Slack</title>
       <meta
         name="description"
-        content="This Bot tracks the minting and burning of fiat."
+        content="Get Latest Economics Metrics in your Slack Workspace. This bot tracks Canada's money supply for the last available month. As well as latest housing data for various Ontario municipalities. "
       />
       <link rel="icon" href="/favicon.ico" />
     </Head>
@@ -42,7 +41,7 @@ const BodyElement: React.FC<{ workspaceCount: number }> = ({
     <main className={styles.main}>
       <h2 className={styles.subtitle}>Welcome to</h2>
       <h1 className={styles.title}>
-        <a href="">MoneySupplyBotV2!</a>
+        <a href="">ECON BOT</a>
       </h1>
       <p>
         <b>{workspaceCount}</b> workspaces installed this app!
@@ -58,23 +57,6 @@ const BodyElement: React.FC<{ workspaceCount: number }> = ({
         />
       </a>
     </main>
-  );
-};
-
-const FooterElement: React.FC = () => {
-  return (
-    <footer className={styles.footer}>
-      <a
-        href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Powered by{" "}
-        <span className={styles.logo}>
-          <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-        </span>
-      </a>
-    </footer>
   );
 };
 
