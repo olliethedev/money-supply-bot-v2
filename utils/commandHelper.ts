@@ -34,12 +34,13 @@ const makeMoneyCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp
         .action(async (opts) => {
             console.log("money ", { options: opts });
             try {
-                const data = await new MoneyHelper().getBlockData(db, opts.type);
-                return onSuccess([data]);
+                const moneyHelper = new MoneyHelper();
+                const data = await moneyHelper.getBlockData(db, opts.type);
+                const image = await moneyHelper.getImageBlock();
+                return onSuccess([data, image]);
             } catch (error) {
                 onError((error as any)?.message);
             }
-
         })
         .configureOutput({
             writeOut: onHelp,
@@ -64,11 +65,11 @@ const makeHousingCommand = (db: mongoDB.Db, onError: (err: string) => void, onHe
                         filter: {
                             period_num: 120,
                             province: "ON",
-                            municipality: opts.municipality??"1001",
-                            community: opts.community??"all",
+                            municipality: opts.municipality ?? "1001",
+                            community: opts.community ?? "all",
                             house_type: opts.type.length > 0 ? opts.type : `${ opts.type }.` //add period to type for single letter types
-                        }, 
-                        month: moment().month(opts.month).format("MM"), 
+                        },
+                        month: moment().month(opts.month).format("MM"),
                         year: opts.year
                     });
                 return onSuccess([data]);

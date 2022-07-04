@@ -27,6 +27,13 @@ class MoneyHelper implements DataHelperBase<MoneyTypes> {
             },
         };
     }
+    async getImageBlock() {
+        return {
+            "type": "image",
+            "image_url": "https://i1.wp.com/thetempest.co/wp-content/uploads/2017/08/The-wise-words-of-Michael-Scott-Imgur-2.jpg?w=1024&ssl=1",
+            "alt_text": "chart"
+        }
+    }
     parseData = (moneyData: MoneyDataItem[]) => {
         const moneyDataFrom = moneyData[moneyData.length - 2];
         const moneyDataTo = moneyData[moneyData.length - 1];
@@ -34,7 +41,7 @@ class MoneyHelper implements DataHelperBase<MoneyTypes> {
         const moneyDataYearAgo = moneyData[yearSafeOffset];
         return { moneyDataFrom, moneyDataTo, moneyDataYearAgo };
     }
-    
+
     formatMessage = (
         fromTime: number,
         fromValue: number,
