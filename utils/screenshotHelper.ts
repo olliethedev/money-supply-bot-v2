@@ -1,9 +1,8 @@
 const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer');
 
-export const getScreenshot = async (url) => {
-    let browser = await puppeteer.launch({
-        args: chromium.args,
+export const getScreenshot = async (url: string) => {
+    const browser = await chromium.puppeteer.launch({
         executablePath: await chromium.executablePath,
         headless: true,
       });
