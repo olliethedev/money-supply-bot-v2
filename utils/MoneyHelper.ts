@@ -3,6 +3,8 @@ import * as mongoDB from "mongodb";
 import { MoneyDataItem } from '../types/MonetaryDataItem';
 import { getMonetaryData } from './cacheHelper';
 import { DataHelperBase, BlockPartial } from '../types/DataHelperBase';
+import { getScreenshot } from './screenshotHelper';
+import { uploadToBucket } from './fileHelper';
 
 export type MoneyTypes = "M1" | "M2" | "M3";
 
@@ -27,10 +29,13 @@ class MoneyHelper implements DataHelperBase<MoneyTypes> {
             },
         };
     }
-    async getImageBlock() {
+    async getImageBlock(moneyType:MoneyTypes) {
+        const buffer = await getScreenshot(`${process.env.PUBLIC_URL}/charts/money/${moneyType}`);
+        console.log({ buffer });
+        const location = await uploadToBucket(buffer, `money/${new Date().getTime()}.jpeg`);
         return {
             "type": "image",
-            "image_url": "https://i1.wp.com/thetempest.co/wp-content/uploads/2017/08/The-wise-words-of-Michael-Scott-Imgur-2.jpg?w=1024&ssl=1",
+            "image_url": location,
             "alt_text": "chart"
         }
     }

@@ -36,7 +36,7 @@ const makeMoneyCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp
             try {
                 const moneyHelper = new MoneyHelper();
                 const data = await moneyHelper.getBlockData(db, opts.type);
-                const image = await moneyHelper.getImageBlock();
+                const image = await moneyHelper.getImageBlock(opts.type);
                 return onSuccess([data, image]);
             } catch (error) {
                 onError((error as any)?.message);
