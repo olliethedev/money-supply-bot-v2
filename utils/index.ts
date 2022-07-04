@@ -12,6 +12,8 @@ export const getSlackInstaller = (db: mongoDB.Db) => {
     clientId: process.env.SLACK_CLIENT_ID as string,
     clientSecret: process.env.SLACK_CLIENT_SECRET as string,
     stateSecret: process.env.SLACK_STATE_SECRET,
+    stateVerification: false,
+    legacyStateVerification: false,
     installationStore: {
       storeInstallation: async (installation) => {
         console.log({ installation });
