@@ -21,6 +21,7 @@ export async function createIndexes(db:mongoDB.Db) {
     db.collection('M1').createIndex({ date: 1 }, { unique: true }),
     db.collection('M2').createIndex({ date: 1 }, { unique: true }),
     db.collection('M3').createIndex({ date: 1 }, { unique: true }),
+    db.collection('Tokens').createIndex({ id: 1 }, { unique: true }),
   ]);
   indexesCreated = true;
 }

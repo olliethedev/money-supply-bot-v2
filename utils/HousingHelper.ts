@@ -3,15 +3,16 @@ import * as mongoDB from "mongodb";
 import { DataHelperBase, BlockPartial } from '../types/DataHelperBase';
 import { HousingFilter } from '../types/HousingFilter';
 import { getHousingFilters, getHousingTrends, HousingTrends } from './apiHelper';
+import { getHousingToken } from './cacheHelper';
 
 class HousingHelper implements DataHelperBase<{ filter: HousingFilter, month: string, year: string }> {
     async getBlockData(db: mongoDB.Db, extra: { filter: HousingFilter, month: string, year: string }): Promise<BlockPartial> {
-        //todo: refactor to use caching
+        const token = await getHousingToken(db);
         if (extra.filter.municipality_name) {
-            extra.filter.municipality = await this.lookupCode(extra.filter.municipality_name);
+            extra.filter.municipality = await this.lookupCode(token, extra.filter.municipality_name);
         }
         console.log({ extra });
-        const trends = await getHousingTrends(extra.filter);
+        const trends = await getHousingTrends(token, extra.filter);
         console.log({ trendsLength: trends.data.chart.length });
         const { dataFrom, dataTo, dataYearAgo } = this.parseData(trends, extra.month, extra.year);
         console.log({ dataFrom, dataTo, dataYearAgo });
@@ -32,8 +33,8 @@ class HousingHelper implements DataHelperBase<{ filter: HousingFilter, month: st
             },
         };
     }
-    lookupCode = async (municipalityName: string) => {
-        const filters = await getHousingFilters();
+    lookupCode = async (token: string, municipalityName: string) => {
+        const filters = await getHousingFilters(token);
         const ids = filters.data.municipality_filter?.flatMap(item => item.list).map(item => ({ name: item?.name.toLocaleLowerCase(), id: item?.id })).filter(item => item.name === municipalityName.toLocaleLowerCase()).map(item => item.id);
         return (ids?.[0] ?? 1001).toString();
     }

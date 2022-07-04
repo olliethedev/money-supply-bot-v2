@@ -178,13 +178,11 @@ export interface Meta {
 }
 
 
-export const getHousingFilters = async () => {
-    const token = await getHousingLoginToken();
-    const login = await registerHousingToken(token.data.access_token, process.env.HOUSING_EMAIL as string, process.env.HOUSING_PASS as string);
+export const getHousingFilters = async (token: string) => {
     return fetch(`${ process.env.HOUSING_API }/stats/trend/summary`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${ token.data.access_token }`,
+            'Authorization': `Bearer ${ token }`,
         },
         redirect: 'follow'
     })
@@ -248,7 +246,7 @@ export interface ChartSoldPriceEntity {
 }
 
 
-export const getHousingTrends = async (filter: HousingFilter = {
+export const getHousingTrends = async (token:string, filter: HousingFilter = {
     municipality: "1001",
     community: "all",
     house_type: "all",
@@ -261,12 +259,10 @@ export const getHousingTrends = async (filter: HousingFilter = {
         lang: "en_US",
     });
     console.log(body);
-    const token = await getHousingLoginToken();
-    const login = await registerHousingToken(token.data.access_token, process.env.HOUSING_EMAIL as string, process.env.HOUSING_PASS as string);
     return fetch(`${ process.env.HOUSING_API }/stats/trend/chart`, {
         method: "POST",
         headers: {
-            authorization: `Bearer ${ token.data.access_token }`,
+            authorization: `Bearer ${ token }`,
             "content-type": "application/json;charset=UTF-8",
         },
         body
