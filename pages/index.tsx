@@ -39,7 +39,7 @@ const BodyElement: React.FC<{ workspaceCount: number }> = ({
 }) => {
   return (
     <main className={styles.main}>
-      <h2 className={styles.subtitle}>Say Hello👋 to</h2>
+      <h2 className={styles.subtitle}>Say Hello &#x1F44B; to</h2>
       <h1 className={styles.title}>
         <a href="">ECON BOT</a>
       </h1>
