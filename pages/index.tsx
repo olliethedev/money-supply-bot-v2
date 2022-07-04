@@ -42,11 +42,21 @@ const BodyElement: React.FC<{ workspaceCount: number }> = ({
     <main className={styles.main}>
       <h2 className={styles.subtitle}>Welcome to</h2>
       <h1 className={styles.title}>
-        <a href="api/slack/install">MoneySupplyBotV2!</a>
+        <a href="">MoneySupplyBotV2!</a>
       </h1>
       <p>
         <b>{workspaceCount}</b> workspaces installed this app!
       </p>
+      <a href="https://slack.com/oauth/v2/authorize?client_id=781060857971.3735785791285&scope=app_mentions:read,chat:write,chat:write.public&user_scope=">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          alt="Add to Slack"
+          height="40"
+          width="139"
+          src="https://platform.slack-edge.com/img/add_to_slack.png"
+          srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x"
+        />
+      </a>
     </main>
   );
 };

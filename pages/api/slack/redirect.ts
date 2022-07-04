@@ -9,7 +9,8 @@ handler.get(async (
     req: NextApiRequestWithMongoDB,
     res: NextApiResponse<any>
 ) => {
-    getSlackInstaller(req.db).handleCallback(req, res);
+    const data = await getSlackInstaller(req.db).handleCallback(req, res);
+    console.log({ data });
 })
 
 export default handler;
