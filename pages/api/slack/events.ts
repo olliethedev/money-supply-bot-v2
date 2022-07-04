@@ -7,6 +7,8 @@ import handler from '../../../middlewares';
 import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 import { commandHelper } from '../../../utils/commandHelper';
 
+const PAST_EVENTS:string[] = [];
+
 interface Data {
     data: string
 }
@@ -42,6 +44,11 @@ handler.post(async (req: NextApiRequestWithMongoDB,
 const handleEvent = async (db: Db, data: SlackData) => {
     const { enterprise_id, team_id, is_enterprise_install } = data.authorizations[0];
     console.log({ enterprise_id, team_id, is_enterprise_install });
+    if(PAST_EVENTS.indexOf(data.event.event_ts) !== -1) {
+        console.log("Event already handled");
+        return;
+    }
+    PAST_EVENTS.push(data.event.event_ts);
     const installData = await getSlackInstaller(db)
         .installationStore
         .fetchInstallation(
