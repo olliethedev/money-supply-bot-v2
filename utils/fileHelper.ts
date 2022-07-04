@@ -2,8 +2,8 @@ import S3 from 'aws-sdk/clients/s3'
 import fetch from 'node-fetch';
 
 const s3 = new S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.MY_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.MY_AWS_SECRET_ACCESS_KEY,
     signatureVersion: 'v4',
     region: 'us-east-1'
 })
@@ -22,7 +22,7 @@ export const uploadToBucket = async (file: any, fileName: string) => {
 }
 
 export const uploadFile = async (file: any, fileName: string) => {
-    const url = await getUploadUrl(file, fileName)
+    const url = await getUploadUrl(file)
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
@@ -39,9 +39,9 @@ export const uploadFile = async (file: any, fileName: string) => {
     return response.json()
 }
 
-const getUploadUrl = async (file: any, fileName: string) => {
+const getUploadUrl = async (fileName: string) => {
     const params ={
-        Bucket: process.env.AWS_BUCKET_NAME,
+        Bucket: process.env.MY_AWS_BUCKET_NAME,
         Key: fileName,
         Expires: 10000,
         'ContentEncoding': 'base64',
