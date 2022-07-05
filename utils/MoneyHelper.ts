@@ -60,12 +60,9 @@ class MoneyHelper implements DataHelperBase<MoneyTypes> {
             ? "chart_with_upwards_trend"
             : "chart_with_downwards_trend";
         const percent = (((toValue - fromValue) / fromValue) * 100.0).toFixed(2);
-        // const fromValueClean = (fromValue / 1000000).toFixed(2);
-        // const toValueClean = (toValue / 1000000).toFixed(2);
-        // const fromTimeMonth = moment(fromTime).format("MMMM");
         const toTimeMonth = moment(toTime).format("MMMM");
         const YoYpercent = ((toValue - yearAgoValue) / yearAgoValue * 100.00).toFixed(2);
-        return `:flag-ca: *${ moneySupplyType }* :money-with_wings: \n :${ changed }: ${ toTimeMonth } change: *${ percent }%* \n Yearly change: *${ YoYpercent }%* `;
+        return `:flag-ca: *${ moneySupplyType }* :money_with_wings: \n :${ changed }: ${ toTimeMonth } change: *${ percent }%* \n Yearly change: *${ YoYpercent }%* `;
     }
 }
 

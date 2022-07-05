@@ -63,17 +63,13 @@ class HousingHelper implements DataHelperBase<{ filter: HousingFilter, month: st
             ? "chart_with_upwards_trend"
             : "chart_with_downwards_trend";
         const percent = (((toValue - fromValue) / fromValue) * 100.0).toFixed(2);
-        // const fromValueClean = (fromValue / 1000000).toFixed(2);
-        // const toValueClean = (toValue / 1000000).toFixed(2);
-        // const fromTimeMonth = moment(fromTime).format("MMMM");
-        // const toTimeMonth = moment(toTime).format("MMMM");
         const yearAgoDateFormatted = moment(yearAgoDate).format("MMMM YYYY");
         const YoYpercent = ((toValue - yearAgoValue) / yearAgoValue * 100.00).toFixed(2);
         return `:flag-ca: *${ this.formatFilter(filter) }*  \n :${ changed }: Monthly change: *${ percent }%* \n Yearly change (${yearAgoDateFormatted}): *${ YoYpercent }%* `;
     }
 
     formatFilter = (filter: HousingFilter) => {
-        return `:round_pushpin: Municipality: ${ filter.municipality }, :people_hugging: Community: ${ filter.community }, :house: House Type: ${ filter.house_type }`;
+        return `:round_pushpin: Municipality: ${ filter.municipality }, :house: House Type: ${ filter.house_type }`;
     }
 }
 
