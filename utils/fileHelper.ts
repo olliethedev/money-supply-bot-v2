@@ -12,7 +12,6 @@ export const uploadToBucket = async (file: any, fileName: string) => {
     const params ={
         Bucket: process.env.MY_AWS_BUCKET_NAME as string,
         Key: fileName,
-        ContentEncoding: 'base64',
         ACL: 'public-read',
         ContentType:'image/jpeg',
         Body: file,
@@ -26,7 +25,6 @@ export const uploadFile = async (file: any, fileName: string) => {
     const response = await fetch(url, {
         method: 'PUT',
         headers: {
-            'ContentEncoding': 'base64',
             "Content-type": "image/jpeg",
             "Access-Control-Allow-Origin": "*"
         },
