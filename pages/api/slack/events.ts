@@ -23,7 +23,7 @@ handler.all(async (req: NextApiRequestWithMongoDB,
     res: NextApiResponse<string | Data | Error>) => {
     const data = req.body;
 
-    console.log({ method: req.method, body: JSON.stringify(data) });
+    console.log({ method: req.method, body: JSON.stringify(data), headers: req.headers });
     try {
         switch (data.type) {
             case "url_verification":
