@@ -7,6 +7,8 @@ import handler from '../../../middlewares';
 import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 import { commandHelper } from '../../../utils/commandHelper';
 
+console.log("Loading events");
+
 const PAST_EVENTS:string[] = [];
 
 interface Data {
