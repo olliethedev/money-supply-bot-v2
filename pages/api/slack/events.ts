@@ -19,7 +19,7 @@ interface Error {
     error: string
 }
 
-handler.post(async (req: NextApiRequestWithMongoDB,
+handler.all(async (req: NextApiRequestWithMongoDB,
     res: NextApiResponse<string | Data | Error>) => {
     const data = req.body;
 
