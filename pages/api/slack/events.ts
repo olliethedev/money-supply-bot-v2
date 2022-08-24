@@ -7,8 +7,6 @@ import handler from '../../../middlewares';
 import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 import { commandHelper } from '../../../utils/commandHelper';
 
-console.log("Loading events");
-
 const PAST_EVENTS:string[] = [];
 
 interface Data {
@@ -19,11 +17,11 @@ interface Error {
     error: string
 }
 
-handler.all(async (req: NextApiRequestWithMongoDB,
+handler.post(async (req: NextApiRequestWithMongoDB,
     res: NextApiResponse<string | Data | Error>) => {
     const data = req.body;
 
-    console.log({ method: req.method, body: JSON.stringify(data), headers: req.headers });
+    console.log({ method: req.method, body: JSON.stringify(data) });
     try {
         switch (data.type) {
             case "url_verification":
