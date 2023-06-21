@@ -71,7 +71,7 @@ const getTools = (db: mongoDB.Db) => {
                     period_num: 120,
                     province: "ON",
                 },
-                month: moment().month(moment().month()).format("MMMM"),
+                month: moment().month(moment().month()).format("MM"),
                 year: moment().year(moment().year()).format("YYYY"),
             });
             return JSON.stringify(data);
