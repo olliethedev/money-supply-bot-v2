@@ -5,6 +5,7 @@ import moment from 'moment';
 import HousingHelper from './HousingHelper';
 import MoneyHelper from './MoneyHelper';
 import StockHelper from './StockHelper';
+import AIHelper from './AIHelper';
 
 type SuccessCallback = (data: (KnownBlock | Block)[]) => Promise<void | any>;
 
@@ -93,10 +94,33 @@ const makeStockCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp
         .description('Get public market data')
         .addOption(new Option('-s, --symbol <string>', "Symbol of stock to fetch"))
         .action(async (opts) => {
-            console.log("stocks ", { options: opts });
+            console.log("market ", { options: opts });
             try {
                 const stocksHelper = new StockHelper();
                 const data = await stocksHelper.getBlockData(db, opts.symbol);
+                return onSuccess([...data]);
+            } catch (error) {
+                console.log(error);
+                onError("Error fetching stock data");
+            }
+        })
+        .configureOutput({
+            writeOut: onHelp,
+            writeErr: onError,
+        })
+        .exitOverride()
+}
+
+const makeChatCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp: (help: string) => void, onSuccess: SuccessCallback) => {
+    //uses Yahoo finance API
+    return new Command('chat')
+        .description('Get answer from chatbot')
+        .addOption(new Option('-t, --text <string>', "User text to send to chatbot"))
+        .action(async (opts) => {
+            console.log("chat", { options: opts });
+            try {
+                const aiHelper = new AIHelper();
+                const data = await aiHelper.getBlockData(db, opts.text);
                 return onSuccess([...data]);
             } catch (error) {
                 console.log(error);
