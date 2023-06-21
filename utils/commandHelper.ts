@@ -89,15 +89,15 @@ const makeHousingCommand = (db: mongoDB.Db, onError: (err: string) => void, onHe
 
 const makeStockCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp: (help: string) => void, onSuccess: SuccessCallback) => {
     //uses Yahoo finance API
-    return new Command('stock')
-        .description('Get stock data')
+    return new Command('market')
+        .description('Get public market data')
         .addOption(new Option('-s, --symbol <string>', "Symbol of stock to fetch"))
         .action(async (opts) => {
             console.log("stocks ", { options: opts });
             try {
                 const stocksHelper = new StockHelper();
                 const data = await stocksHelper.getBlockData(db, opts.symbol);
-                return onSuccess([data]);
+                return onSuccess([...data]);
             } catch (error) {
                 console.log(error);
                 onError("Error fetching stock data");
