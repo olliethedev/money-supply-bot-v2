@@ -16,7 +16,11 @@ const QUOTE_TYPE_INDEX = "INDEX";
 class StockHelper {
     async getBlockData(db: mongoDB.Db, symbol: string): Promise<any> {
         const url = YAHOO_FINANCE_URL.replace("{0}", symbol).replace("{1}", FIELDS);
-        const response = await fetch(url);
+        const response = await fetch(url,{
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36"
+            }
+        });
         const data = await response.json();
         console.log({ data });
         const result = data.result[0];
