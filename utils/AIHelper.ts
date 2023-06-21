@@ -61,9 +61,13 @@ const getTools = (db: mongoDB.Db) => {
 
         try {
             const parsed = JSON.parse(input);
+            //{"period_num":120,"province":"ON","municipality":"North","community":"all","house_type":"all","ign":"","lang":"en_US"}
             const data = await new HousingHelper().getBlockData(db, {
                 filter: {
                     ...parsed.filter,
+                    municipality: parsed.filter.municipality ?? "1001",
+                    community: parsed.filter.community ?? "all",
+                    house_type: parsed.filter.house_type ?? "all",
                     period_num: 120,
                     province: "ON",
                 },
