@@ -47,7 +47,7 @@ class StockHelper {
 
         const data = await res3.json() as any;
         console.log(JSON.stringify(data));
-        const result = data.result[0];
+        const result = data.quoteResponse.result[0];
         const name = this.getSymbolName(result);
         const state = result.marketState;
         const quoteType = result.quoteType;
