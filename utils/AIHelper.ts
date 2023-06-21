@@ -31,7 +31,12 @@ class AIHelper {
 
         const result = await executor.call({ input: text });
 
-        return result.output;
+        return [
+            {
+                type: "text",
+                text: result.output,
+            }
+        ]
     }
 }
 
