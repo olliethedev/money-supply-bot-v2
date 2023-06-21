@@ -99,7 +99,7 @@ const makeStockCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp
                 const data = await stocksHelper.getBlockData(db, opts.symbol);
                 return onSuccess([data]);
             } catch (error) {
-                onError((error as any)?.message);
+                onError("Error fetching stock data");
             }
         })
         .configureOutput({
