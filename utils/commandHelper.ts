@@ -96,7 +96,7 @@ const makeStockCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp
             console.log("stocks ", { options: opts });
             try {
                 const stocksHelper = new StockHelper();
-                const data = await stocksHelper.getStockData( opts.symbol);
+                const data = await stocksHelper.getBlockData(db, opts.symbol);
                 return onSuccess([data]);
             } catch (error) {
                 onError((error as any)?.message);
