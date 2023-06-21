@@ -63,8 +63,8 @@ const getTools = (db: mongoDB.Db) => {
             const parsed = JSON.parse(input);
             const data = await new HousingHelper().getBlockData(db, {
                 ...parsed,
-                month: parsed.month ? moment(parsed.month).month(moment().month()).format("MMMM") : moment().month(moment().month()).format("MMMM"),
-                year: parsed.year ? moment().year(moment(parsed.month).year()) : moment().year(moment().year()),
+                month: moment().month(moment().month()).format("MMMM"),
+                year: moment().year(moment().year()).format("YYYY"),
             });
             return JSON.stringify(data);
         } catch (error: any) {
