@@ -4,7 +4,7 @@ import fetch, { Headers } from 'node-fetch';
 
 import * as mongoDB from "mongodb";
 
-const YAHOO_FINANCE_URL = "https://query1.finance.yahoo.com/v7/finance/quote?formatted=true&symbols={0}&fields={1}";
+const YAHOO_FINANCE_URL = "https://query2.finance.yahoo.com/v7/finance/quote?symbols={0}&crumb={1}&fields={2}";
 const FIELDS = "regularMarketChangePercent%2CregularMarketChange%2CregularMarketPrice%2ClongName%2CshortName%2CmarketState%2CpostMarketChangePercent%2CpostMarketChange%2CpostMarketPrice%2CpreMarketChange%2CpreMarketPrice%2CpreMarketChangePercent";
 const MARKET_STATE_REG = "REGULAR";
 const MARKET_STATE_PRE = "PRE";
@@ -37,7 +37,7 @@ class StockHelper {
         const crumbValue = await res2.text(); // Get the crumb value from response body
 
         // Third GET call
-        const url = YAHOO_FINANCE_URL.replace("{0}", symbol).replace("{1}", crumbValue);
+        const url = YAHOO_FINANCE_URL.replace("{0}", symbol).replace("{1}", crumbValue).replace("{2}", FIELDS);
         const res3 = await fetch(url, {
             headers: new Headers({
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36",
