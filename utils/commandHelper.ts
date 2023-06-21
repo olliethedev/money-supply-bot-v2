@@ -4,6 +4,7 @@ import * as mongoDB from 'mongodb';
 import moment from 'moment';
 import HousingHelper from './HousingHelper';
 import MoneyHelper from './MoneyHelper';
+import StockHelper from './StockHelper';
 
 type SuccessCallback = (data: (KnownBlock | Block)[]) => Promise<void | any>;
 
@@ -14,7 +15,8 @@ export const commandHelper = async (db: mongoDB.Db, command: string[], onError: 
         .description('CLI to some economic data')
         .exitOverride()
         .addCommand(makeMoneyCommand(db, onError, onHelp, onSuccess))
-        .addCommand(makeHousingCommand(db, onError, onHelp, onSuccess));
+        .addCommand(makeHousingCommand(db, onError, onHelp, onSuccess))
+        .addCommand(makeStockCommand(db, onError, onHelp, onSuccess));
     try {
         const result = await program.parseAsync(command);
         program.commands = [];
@@ -84,3 +86,28 @@ const makeHousingCommand = (db: mongoDB.Db, onError: (err: string) => void, onHe
         })
         .exitOverride()
 }
+
+const makeStockCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp: (help: string) => void, onSuccess: SuccessCallback) => {
+    //uses Yahoo finance API
+    return new Command('stock')
+        .description('Get stock data')
+        .addOption(new Option('-s, --symbol <string>', "Symbol of stock to fetch"))
+        .action(async (opts) => {
+            console.log("stocks ", { options: opts });
+            try {
+                const stocksHelper = new StockHelper();
+                const data = await stocksHelper.getStockData( opts.symbol);
+                return onSuccess([data]);
+            } catch (error) {
+                onError((error as any)?.message);
+            }
+        })
+        .configureOutput({
+            writeOut: onHelp,
+            writeErr: onError,
+        })
+        .exitOverride()
+}
+
+
+
