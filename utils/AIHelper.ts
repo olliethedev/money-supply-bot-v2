@@ -16,12 +16,12 @@ class AIHelper {
             verbose: false,
             timeout: 5 * 60 * 1000
         });
-    
+
         // Add all available tools to the array
         const tools = [
             ...getTools(db),
         ];
-    
+
         // Initialize the executor with the tools and model
         const executor = await initializeAgentExecutorWithOptions(tools, model, {
             agentType: "openai-functions",
@@ -31,12 +31,15 @@ class AIHelper {
 
         const result = await executor.call({ input: text });
 
-        return [
-            {
-                type: "text",
+        console.log("AIHelper", { result });
+
+        return {
+            type: "section",
+            text: {
+                type: "mrkdwn",
                 text: result.output,
-            }
-        ]
+            },
+        }
     }
 }
 
@@ -44,21 +47,22 @@ const getTools = (db: mongoDB.Db) => {
     const getMoneySupply = async (input: string): Promise<string> => {
         console.log(`Fetching money supply for ${ input }`);
         try {
-    
-           const data =  new MoneyHelper().getBlockData(db, input as MoneyTypes);
-    
+
+            const data = new MoneyHelper().getBlockData(db, input as MoneyTypes);
+
             return JSON.stringify(data);
         } catch (error: any) {
             return `Error: ${ error.message }`;
         }
     };
 
-    const getHousingStats = async (input:string): Promise<string> => {
-        console.log(`Fetching housing stats for ${input}`);
+    const getHousingStats = async (input: string): Promise<string> => {
+        console.log(`Fetching housing stats for ${ input }`);
 
         try {
             const parsed = JSON.parse(input);
-            const data = await new HousingHelper().getBlockData(db, {...parsed,
+            const data = await new HousingHelper().getBlockData(db, {
+                ...parsed,
                 month: parsed.month ? moment(parsed.month).month(moment().month()).format("MMMM") : moment().month(moment().month()).format("MMMM"),
                 year: parsed.year ? moment().year(moment(parsed.month).year()) : moment().year(moment().year()),
             });

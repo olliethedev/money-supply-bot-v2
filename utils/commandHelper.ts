@@ -122,7 +122,7 @@ const makeChatCommand = (db: mongoDB.Db, onError: (err: string) => void, onHelp:
             try {
                 const aiHelper = new AIHelper();
                 const data = await aiHelper.getBlockData(db, opts.text);
-                return onSuccess([...data]);
+                return onSuccess([data]);
             } catch (error) {
                 console.log(error);
                 onError("Error fetching stock data");
