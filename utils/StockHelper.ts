@@ -1,5 +1,7 @@
 import { BlockPartial } from "../types/DataHelperBase";
 
+import fetch, { Headers } from 'node-fetch';
+
 import * as mongoDB from "mongodb";
 
 const YAHOO_FINANCE_URL = "https://query1.finance.yahoo.com/v7/finance/quote?formatted=true&symbols={0}&fields={1}";
@@ -15,13 +17,35 @@ const QUOTE_TYPE_INDEX = "INDEX";
 
 class StockHelper {
     async getBlockData(db: mongoDB.Db, symbol: string): Promise<any> {
-        const url = YAHOO_FINANCE_URL.replace("{0}", symbol).replace("{1}", FIELDS);
-        const response = await fetch(url,{
+        // First GET call
+        const res1 = await fetch("https://fc.yahoo.com", {
             headers: {
                 "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36"
             }
         });
-        const data = await response.json();
+        
+        const cookie = res1.headers.get('set-cookie') as string; // Get the set-cookie from response headers
+        
+        // Second GET call
+        const res2 = await fetch("https://query2.finance.yahoo.com/v1/test/getcrumb", {
+            headers: new Headers({
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36",
+                "Cookie": cookie
+            })
+        });
+
+        const crumbValue = await res2.text(); // Get the crumb value from response body
+
+        // Third GET call
+        const url = YAHOO_FINANCE_URL.replace("{0}", symbol).replace("{1}", crumbValue);
+        const res3 = await fetch(url, {
+            headers: new Headers({
+                "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36",
+                "Cookie": cookie
+            })
+        });
+
+        const data = await res3.json() as any;
         console.log(JSON.stringify(data));
         const result = data.result[0];
         const name = this.getSymbolName(result);
