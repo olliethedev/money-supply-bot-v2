@@ -22,7 +22,7 @@ class StockHelper {
             }
         });
         const data = await response.json();
-        console.log({ data });
+        console.log(JSON.stringify(data));
         const result = data.result[0];
         const name = this.getSymbolName(result);
         const state = result.marketState;
