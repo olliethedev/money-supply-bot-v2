@@ -94,10 +94,10 @@ class StockHelper {
         const price = this.getPriceForMarketStateByQuoteType(quoteType, state, result);
 
         return formatMessage({name, price:{
-            previous: price?.previous?.toString() ?? "0",
-            change: price?.change?.toString() ?? "0",
-            percent: price?.percent?.toString() ?? "0",
-            current: price?.current?.toString() ?? "0",
+            previous: price?.previous?.toFixed(2) ?? "0",
+            change: price?.change?.toFixed(2) ?? "0",
+            percent: price?.percent?.toFixed(2) ?? "0",
+            current: price?.current?.toFixed(2) ?? "0",
 
         }, state, quoteType, symbol});
     }
