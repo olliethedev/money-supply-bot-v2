@@ -18,8 +18,8 @@ class StockHelper {
         const url = YAHOO_FINANCE_URL.replace("{0}", symbol).replace("{1}", FIELDS);
         const response = await fetch(url);
         const data = await response.json();
-
-        const result = data.quoteResponse.result[0];
+        console.log({ data });
+        const result = data.result[0];
         const name = this.getSymbolName(result);
         const state = result.marketState;
         const quoteType = result.quoteType;
