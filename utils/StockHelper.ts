@@ -15,6 +15,46 @@ const QUOTE_TYPE_ETF = "ETF";
 const QUOTE_TYPE_CRYPTO = "CRYPTOCURRENCY";
 const QUOTE_TYPE_INDEX = "INDEX";
 
+interface ResultType {
+    language: string
+    region: string
+    quoteType: string
+    typeDisp: string
+    quoteSourceName: string
+    triggerable: boolean
+    customPriceAlertConfidence: string
+    regularMarketChangePercent: number
+    firstTradeDateMilliseconds: number
+    priceHint: number
+    exchange: string
+    shortName: string
+    longName: string
+    exchangeTimezoneName: string
+    exchangeTimezoneShortName: string
+    gmtOffSetMilliseconds: number
+    market: string
+    esgPopulated: boolean
+    marketState: string
+    regularMarketPrice: number
+    fullExchangeName: string
+    sourceInterval: number
+    exchangeDataDelayedBy: number
+    tradeable: boolean
+    cryptoTradeable: boolean
+    preMarketChange?: number
+    preMarketChangePercent?: number
+    preMarketTime?: number
+    preMarketPrice?: number
+    postMarketChange?: number
+    postMarketChangePercent?: number
+    postMarketTime?: number
+    postMarketPrice?: number
+    regularMarketChange: number
+    regularMarketTime: number
+    regularMarketPreviousClose: number
+    symbol: string
+  }
+
 class StockHelper {
     async getBlockData(db: mongoDB.Db, symbol: string): Promise<any> {
         // First GET call
@@ -47,16 +87,22 @@ class StockHelper {
 
         const data = await res3.json() as any;
         console.log(JSON.stringify(data));
-        const result = data.quoteResponse.result[0];
+        const result = data.quoteResponse.result[0] as ResultType;
         const name = this.getSymbolName(result);
         const state = result.marketState;
         const quoteType = result.quoteType;
         const price = this.getPriceForMarketStateByQuoteType(quoteType, state, result);
 
-        return formatMessage({name, price, state, quoteType, symbol});
+        return formatMessage({name, price:{
+            previous: price?.previous?.toString() ?? "0",
+            change: price?.change?.toString() ?? "0",
+            percent: price?.percent?.toString() ?? "0",
+            current: price?.current?.toString() ?? "0",
+
+        }, state, quoteType, symbol});
     }
 
-    getSymbolName(result: any) {
+    getSymbolName(result: ResultType) {
         if (result.longName) {
             return result.longName;
         } else if (result.shortName) {
@@ -66,7 +112,7 @@ class StockHelper {
         }
     }
 
-    getPriceForMarketStateByQuoteType(quoteType: string, state: string, result: any) {
+    getPriceForMarketStateByQuoteType(quoteType: string, state: string, result: ResultType) {
         if (quoteType === QUOTE_TYPE_INDEX || quoteType === QUOTE_TYPE_ETF) {
             return this.getPriceForMarketStateless(result);
         } else if (quoteType === QUOTE_TYPE_CRYPTO) {
@@ -76,45 +122,45 @@ class StockHelper {
         }
     }
 
-    getPriceForMarketStateless(result: any) {
+    getPriceForMarketStateless(result: ResultType) {
         return {
-            current: result.regularMarketPrice.fmt,
-            previous: result.regularMarketPreviousClose.fmt,
-            change: result.regularMarketChange.fmt,
-            percent: result.regularMarketChangePercent.fmt
+            current: result.regularMarketPrice,
+            previous: result.regularMarketPreviousClose,
+            change: result.regularMarketChange,
+            percent: result.regularMarketChangePercent
         };
     }
 
-    getPriceForMarketStateCrypto(result: any) {
+    getPriceForMarketStateCrypto(result: ResultType) {
         return {
-            current: result.regularMarketPrice.fmt,
-            previous: result.regularMarketPreviousClose.fmt,
-            change: result.regularMarketChange.fmt,
-            percent: result.regularMarketChangePercent.fmt
+            current: result.regularMarketPrice,
+            previous: result.regularMarketPreviousClose,
+            change: result.regularMarketChange,
+            percent: result.regularMarketChangePercent
         };
     }
 
-    getPriceForMarketStateEquity(state: string, result: any) {
+    getPriceForMarketStateEquity(state: string, result: ResultType) {
         if (state === MARKET_STATE_PRE) {
             return {
-                current: result.preMarketPrice.fmt,
-                previous: result.regularMarketPrice.fmt,
-                change: result.preMarketChange.fmt,
-                percent: result.preMarketChangePercent.fmt
+                current: result.preMarketPrice,
+                previous: result.regularMarketPrice,
+                change: result.preMarketChange,
+                percent: result.preMarketChangePercent
             };
         } else if (state === MARKET_STATE_POST || state === MARKET_STATE_NIGHT || state === MARKET_STATE_CLOSED) {
             return {
-                current: result.postMarketPrice.fmt,
-                previous: result.regularMarketPrice.fmt,
-                change: result.postMarketChange.fmt,
-                percent: result.postMarketChangePercent.fmt
+                current: result.postMarketPrice,
+                previous: result.regularMarketPrice,
+                change: result.postMarketChange,
+                percent: result.postMarketChangePercent
             };
         } else {
             return {
-                current: result.regularMarketPrice.fmt,
-                previous: result.regularMarketPreviousClose.fmt,
-                change: result.regularMarketChange.fmt,
-                percent: result.regularMarketChangePercent.fmt
+                current: result.regularMarketPrice,
+                previous: result.regularMarketPreviousClose,
+                change: result.regularMarketChange,
+                percent: result.regularMarketChangePercent
             };
         }
     }
