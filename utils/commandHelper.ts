@@ -17,7 +17,8 @@ export const commandHelper = async (db: mongoDB.Db, command: string[], onError: 
         .exitOverride()
         .addCommand(makeMoneyCommand(db, onError, onHelp, onSuccess))
         .addCommand(makeHousingCommand(db, onError, onHelp, onSuccess))
-        .addCommand(makeStockCommand(db, onError, onHelp, onSuccess));
+        .addCommand(makeStockCommand(db, onError, onHelp, onSuccess))
+        .addCommand(makeChatCommand(db, onError, onHelp, onSuccess));
     try {
         const result = await program.parseAsync(command);
         program.commands = [];
