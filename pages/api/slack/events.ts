@@ -59,7 +59,7 @@ const handleEvent = async (db: Db, data: SlackData) => {
             });
     console.log({ installData });
     console.log({ text: data.event.text })
-    const commandInput = data.event.text.match(/(\w+)|'([^']+)'/g) || [];
+    const commandInput = data.event.text.match(/--\w+|'[^']+'|\w+/g) || [];
     const command = ["node", "MoneySupplyBotV2", ...commandInput];
     console.log({ command })
     const chatClient = getSlackClient(installData.bot?.token as string).chat;
