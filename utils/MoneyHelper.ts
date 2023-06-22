@@ -10,7 +10,13 @@ export type MoneyTypes = "M1" | "M2" | "M3";
 
 class MoneyHelper implements DataHelperBase<MoneyTypes> {
     async getBlockData(db: mongoDB.Db, moneyType: MoneyTypes): Promise<BlockPartial> {
-        const moneyRespJson = await getMonetaryData(db, moneyType);
+        let cleanMoneyType = moneyType;
+        if (moneyType !== "M1" && moneyType !== "M2" && moneyType !== "M3") {
+            cleanMoneyType = "M1";
+        }
+        const moneyRespJson = await getMonetaryData(db, cleanMoneyType);
+
+        console.log({ moneyRespJson });
         const { moneyDataFrom, moneyDataTo, moneyDataYearAgo } =
             this.parseData(moneyRespJson);
         const parsed = this.formatMessage(
@@ -19,7 +25,7 @@ class MoneyHelper implements DataHelperBase<MoneyTypes> {
             moneyDataTo.date,
             moneyDataTo.value,
             moneyDataYearAgo.value,
-            moneyType
+            cleanMoneyType
         );
         return {
             type: "section",
