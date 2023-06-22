@@ -2,7 +2,9 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { DynamicTool } from "langchain/tools";
 import * as mongoDB from "mongodb";
 import { initializeAgentExecutorWithOptions } from "langchain/agents";
-import { getMoneySupply } from "./apiHelper";
+import { GoogleCustomSearch } from "langchain/tools";
+import { WebBrowser } from "langchain/tools/webbrowser";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import MoneyHelper, { MoneyTypes } from "./MoneyHelper";
 import StockHelper from "./StockHelper";
 import HousingHelper from "./HousingHelper";
@@ -120,7 +122,23 @@ const getTools = (db: mongoDB.Db) => {
         func: getMarketPrices,
     });
 
-    return [getMoneySupplyTool, getHousingStatsTool, getMarketPricesTool];
+    const googleSearch = new GoogleCustomSearch({
+        apiKey: process.env.GOOGLE_API_KEY ?? "",
+        googleCSEId: process.env.GOOGLE_CSE_ID ?? "",
+    });
+
+    const embeddings = new OpenAIEmbeddings();
+
+    const webBrowser = new WebBrowser({
+        model: new ChatOpenAI({
+            modelName: "gpt-3.5-turbo",
+            temperature: 0.4,
+            verbose: false,
+            timeout: 5 * 60 * 1000
+        }), embeddings
+    });
+
+    return [getMoneySupplyTool, getHousingStatsTool, getMarketPricesTool, googleSearch, webBrowser];
 }
 
 
