@@ -6,6 +6,8 @@ import { SlackData } from '../../../types/SlackData';
 import handler from '../../../middlewares';
 import { NextApiRequestWithMongoDB } from '../../../types/NextApiRequestWithMongoDB';
 import { commandHelper } from '../../../utils/commandHelper';
+import { Installation } from '@slack/oauth';
+import AIHelper from '../../../utils/AIHelper';
 
 const PAST_EVENTS:string[] = [];
 
@@ -59,7 +61,17 @@ const handleEvent = async (db: Db, data: SlackData) => {
             });
     console.log({ installData });
     console.log({ text: data.event.text })
-    const splitText = data.event.text.split(" ");
+
+    if (data.event.text.startsWith("cli-mode")) {
+        await handleCliFlow(db, data, installData);
+    }else{
+        await handleChatBotFlow(db, data, installData);
+    }
+    
+}
+
+const handleCliFlow = async (db: Db, data: SlackData, installData:Installation) => {
+    const splitText = data.event.text.split("cli-mode ");
     splitText.shift();  // Removes the first element
     const remainingText = splitText.join(" ");  // Join remaining elements back into a string
     const commandInput = remainingText.match(/--?\w+|'[^']+'|\w+/g) || [];
@@ -86,9 +98,19 @@ const handleEvent = async (db: Db, data: SlackData) => {
             channel: data.event.channel,
         });
     });
-
-
 }
+
+const handleChatBotFlow = async (db: Db, data: SlackData, installData:Installation) => {
+    const aiHelper = new AIHelper();
+    const commandInput = data.event.text.substring(data.event.text.indexOf(" ") + 1)
+    const commandData = await aiHelper.getBlockData(db, commandInput);
+    const chatClient = getSlackClient(installData.bot?.token as string).chat;
+    return chatClient.postMessage({
+        blocks: [commandData],
+        channel: data.event.channel,
+    });
+}
+
 
 const textBlockWrapper = (text?: string) => {
     return [
