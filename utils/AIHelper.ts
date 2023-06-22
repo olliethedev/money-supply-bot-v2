@@ -98,7 +98,7 @@ const getTools = (db: mongoDB.Db) => {
     const getMoneySupplyTool = new DynamicTool({
         name: "getMoneySupply",
 
-        description: `Returns Canadas money supply.
+        description: `Returns Canadas current money supply data.
         Input should be a single string of M1, M2, or M3. Example input: M1`,
         func: getMoneySupply,
     });
